@@ -4,7 +4,7 @@ import string
 import json
 import sqlite3
 
-conn = sqlite3.connect(dummydata.db')
+conn = sqlite3.connect('dummydata.db')
 
 cur = conn.cursor()
 
