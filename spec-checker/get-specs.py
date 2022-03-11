@@ -5,37 +5,13 @@ import csv
 import os
 import socket
 import subprocess
+import random
 
 
 User = os.getlogin()
 
 
 fqdn = socket.getfqdn()
-
-
-
-def get_size(bytes, suffix="B"):
-    """
-    Scale bytes to its proper format
-    e.g:
-        1253656 => '1.20MB'
-        1253656678 => '1.17GB'
-    """
-    factor = 1024
-    for unit in ["", "K", "M", "G", "T", "P"]:
-        if bytes < factor:
-            return f"{bytes:.2f}{unit}{suffix}"
-        bytes /= factor
-
-uname = platform.uname()
-#print('====  main uname',uname) 
-
-
-
-#osArch = platform.architecture()
-#print('====  osArch', osArch[0])
-#Pythonbits = osArch[0]
-
 
 
 def OSbits():
@@ -53,8 +29,28 @@ def OSbits():
 
 OSbit = OSbits()
 
+trim = str(OSbit).split("'")
+
+OSbit = (trim[1])
+
+print('====  OSbit', OSbit)
 
 
+def get_size(bytes, suffix="B"):
+    """
+    Scale bytes to its proper format
+    e.g:
+        1253656 => '1.20MB'
+        1253656678 => '1.17GB'
+    """
+    factor = 1024
+    for unit in ["", "K", "M", "G", "T", "P"]:
+        if bytes < factor:
+            return f"{bytes:.2f}{unit}{suffix}"
+        bytes /= factor
+
+uname = platform.uname()
+#print('====  main uname',uname) 
 
 
 #
@@ -94,14 +90,19 @@ print('====  TotalRam', TotalRam)
 
 
 
+
+
+
 data = [hostName, User, OSname, OSVersion, OSbit,Processor,PhysicalCores,TotalCores,TotalRam, fqdn]
 
-
-with open('output.csv', 'a+') as f:
-   write = csv.writer(f)
-   write.writerows([data])
-
-
-
+try:
+    with open('output.csv', 'a+', newline='') as f:
+        write = csv.writer(f)
+        write.writerows([data])
+except:
+    print('Permission error, perhaps output.csv is already open..')
+    with open('output_' + User + str(random.randint(1,999)) + ".csv", 'a+', newline='') as f:
+        write = csv.writer(f)
+        write.writerows([data])
 
 
